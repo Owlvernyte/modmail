@@ -7,7 +7,7 @@ const config = require('./config.json');
 
 client.on("ready", () => {
 
-    console.log("Bot online")
+    console.log("Bot is now online.")
     client.user.setActivity(
       {
           type: ACT,
@@ -22,9 +22,9 @@ client.on("channelDelete", (channel) => {
         if (!person) return;
 
         let yembed = new discord.MessageEmbed()
-            .setAuthor("CASE ĐÃ ĐÓNG", `https://cdn.discordapp.com/attachments/852888201391374376/853598262724395018/20210613_182942.gif`)
+            .setAuthor("CASE CLOSED", `https://cdn.discordapp.com/attachments/852888201391374376/853598262724395018/20210613_182942.gif`)
             .setColor('RED')
-            .setDescription("Làm ơn không phản hồi sau thư này trừ khi bạn còn vấn đề cần hỗ trợ! Xin cảm ơn.")
+            .setDescription("Please do not reply after this message unless you have another trouble.")
         return person.send(yembed)
 
     }
@@ -62,7 +62,7 @@ client.on("message", async message => {
           if (!message.content.startsWith(prefix) || message.author.bot) return;
 
           if (!message.member.roles.cache.find((x) => x.name == "Staff")) {
-                return message.reply("Bạn cần role `Staff`.");
+                return message.reply("You need `Staff` role.");
           }
 
           if (!args[0]) { message.author.send({
@@ -113,7 +113,7 @@ client.on("message", async message => {
         //   message.delete()
         // }
 
-        if (command == "mod-mail") {
+        if (command == "setup") {
             if (!message.content.startsWith(prefix)) return;
             if (!message.member.hasPermission("ADMINISTRATOR")) {
                 return message.channel.send("You need Admin Permissions to setup the modmail system!")
@@ -133,13 +133,13 @@ client.on("message", async message => {
                         name: "Staff",
                         color: "YELLOW"
                     },
-                    reason: "Role cần cho hệ thống ModMail"
+                    reason: "A role that need for Modmail system."
                 })
             }
 
             await message.guild.channels.create("MODMAIL", {
                 type: "category",
-                topic: "Tất cả thư sẽ được lưu trữ ở đây.",
+                topic: "All cases will be sent here.",
                 permissionOverwrites: [
                     {
                         id: role.id,
@@ -153,28 +153,28 @@ client.on("message", async message => {
             })
 
 
-            return message.channel.send("LẮP ĐẶT HOÀN THÀNH ✅")
+            return message.channel.send("SETUP DONE! ✅")
 
         } else if (command == "close") {
             if (!message.content.startsWith(prefix)) return;
             if (!message.member.roles.cache.find((x) => x.name == "Staff")) {
-                return message.channel.send("Bạn cần role `Staff`.")
+                return message.channel.send("You need `Staff` role.")
             }
             if (message.channel.parentID == message.guild.channels.cache.find((x) => x.name == "MODMAIL").id) {
 
                 const person = message.guild.members.cache.get(message.channel.name)
 
                 if (!person) {
-                    return message.channel.send("Tôi không thể đóng kênh này bởi vì tên kênh đã thay đổi.")
+                    return message.channel.send("I cant close this case because the channel name has been changed.")
                 }
 
                 await message.channel.delete()
 
                 let yembed = new discord.MessageEmbed()
-                    .setAuthor("ĐÓNG CASE")
+                    .setAuthor("CASE CLOSED")
                     .setColor("RED")
-                    .setFooter("CASE đã đóng bởi " + message.author.username,message.author.displayAvatarURL({ dynamic: true }))
-                if (args[0]) yembed.setDescription(`Lý do: ${args.join(" ")}`)
+                    .setFooter("This case was closed by " + message.author.username,message.author.displayAvatarURL({ dynamic: true }))
+                if (args[0]) yembed.setDescription(`Reason: ${args.join(" ")}`)
 
                 return person.send(yembed)
 
@@ -188,48 +188,48 @@ client.on("message", async message => {
             }
 
             if (!message.member.roles.cache.find((x) => x.name == "Staff")) {
-                return message.channel.send("Bạn cần role `Staff`.")
+                return message.channel.send("You need `Staff` role.")
             }
 
             if (isNaN(args[0]) || !args.length) {
-                return message.channel.send("Hãy điền ID của người đó!")
+                return message.channel.send("Please provide his/her user ID!")
             }
 
             const target = message.guild.members.cache.find((x) => x.id === args[0])
 
             if (!target) {
-                return message.channel.send("Không tìm được người này.")
+                return message.channel.send("Can not find this user.")
             }
 
 
             const channel = await message.guild.channels.create(target.id, {
                 type: "text",
                 parent: category.id,
-                topic: "CASE được trực tiếp mở bởi **" + message.author.username + "** để liên hệ với " + message.author.tag
+                topic: "This case was directly open by **" + message.author.username + "** to contact with " + message.author.tag
             })
 
             let nembed = new discord.MessageEmbed()
-                .setAuthor("CHI TIẾT", target.user.displayAvatarURL({ dynamic: true }))
+                .setAuthor("DETAILS", target.user.displayAvatarURL({ dynamic: true }))
                 .setColor("BLUE")
                 .setThumbnail(target.user.displayAvatarURL({ dynamic: true }))
                 .setDescription(message.content)
-                .addField("Tên", target.user.username)
-                .addField("Ngày tạo tài khoản", target.user.createdAt)
-                .addField("Liên hệ trực tiếp", "Có (Nghĩa là form này được mở khi sử dụng o.open)");
+                .addField("Name", target.user.username)
+                .addField("Account created date", target.user.createdAt)
+                .addField("Directly open", "Yes (This means this case was open using o.open)");
 
             channel.send(nembed)
 
             let uembed = new discord.MessageEmbed()
-                .setAuthor("CASE ĐÃ MỞ")
+                .setAuthor("CASE OPENED")
                 .setColor("GREEN")
                 .setThumbnail(`https://cdn.discordapp.com/attachments/852888201391374376/853598262724395018/20210613_182942.gif`)
-                .setDescription("Bạn vừa được liên hệ bởi Staff của **" + message.guild.name + "**, Xin vui lòng đợi đến khi họ liên hệ bạn!");
+                .setDescription("You have been contacted by `Staff` of **" + message.guild.name + "**, please wait until they contact with you!");
 
 
             target.send(uembed);
 
             let newEmbed = new discord.MessageEmbed()
-                .setDescription("Vừa mở CASE: <#" + channel + ">")
+                .setDescription("A CASE has just been opened: <#" + channel + ">")
                 .setColor("GREEN");
 
             return message.channel.send(newEmbed);
@@ -237,10 +237,10 @@ client.on("message", async message => {
             if (!message.content.startsWith(prefix)) return;
 
             let normalembed = new discord.MessageEmbed()
-                .setAuthor('Help Panel | Normal')
+                .setAuthor('Help Panel | Normal') //Normal means its opened by non-Staff user.
                 .setColor('WHITE')
-                .addField("mm", 'Hiện bảng trợ giúp này.',true)
-                .addField("say", prefix + "say + <Nội dung>",true)                
+                .addField("mm", 'Show this help panel',true)
+                .addField("say", prefix + "say + <Content>",true)                
                 .setFooter("Requested by " + message.author.tag,message.author.displayAvatarURL({ dynamic: true }))
                 .setTimestamp();
 
@@ -249,14 +249,14 @@ client.on("message", async message => {
             }
 
             let embed = new discord.MessageEmbed()
-                .setAuthor('Help Panel | Staff')
+                .setAuthor('Help Panel | Staff') //Staff means Staff, yeah /shrug
                 .setColor("BLACK")
-                .addField("mm", 'Hiện bảng trợ giúp này', true)
-                .addField("open", 'Cú pháp: o.open + <ID>\nMở form với ID của họ.', true)
-                .addField("close", "Đóng form khi muốn kết thúc vấn đề.", true)
-                .addField("say", prefix + "say + <Nội dung>",true)  
-                .addField("sayd", "Như lệnh " + prefix + "say nhưng xóa tác giả.", true)
-                .addField("links", "Gửi link tổng hợp.", true)
+                .addField("mm", 'Show this help panel', true)
+                .addField("open", 'Using: o.open + <ID>\nOpen a CASE with their user ID.', true)
+                .addField("close", "Close CASE when unnecessary.", true)
+                .addField("say", prefix + "say + <content>",true)  
+                .addField("sayd", "Same as " + prefix + "say but delete author command.", true)
+                .addField("links", "Show links of us.", true)
                 .setFooter("Requested by " + message.author.tag,message.author.displayAvatarURL({ dynamic: true }))
                 .setTimestamp();
                 
@@ -267,19 +267,19 @@ client.on("message", async message => {
               if (!message.content.startsWith(prefix)) return;
               let embed = new discord.MessageEmbed()
                   .setAuthor('Links of us',`https://cdn.discordapp.com/attachments/852888201391374376/853598262724395018/20210613_182942.gif`,'https://www.youtube.com/channel/UCEG5sgFKieaUuHsu5VG-kBg')
-                  .setDescription('**Discord**: https://discord.link/owlvernyte\n**Facebook**: https://www.facebook.com/owlvernyte')
+                  .setDescription('**Discord**: https://discord.link/owlvernyte' + "\n" + '**Facebook**: https://www.facebook.com/owlvernyte' + "\n" + '**Github**: https://github.com/Owlvernyte/modmail')
                   .setColor("PURPLE")
-                  .setFooter('Thánk kìu à lót!')
+                  .setFooter('Thanks a lot!')
                   .setThumbnail();
               return message.channel.send(embed);
 
-        } else if (command == "nick") {
+        /*} else if (command == "nick") {
             if (!message.content.startsWith(prefix)) return;
             let lembed = new discord.MessageEmbed()
               .setDescription('DEVELOPING...')
               .setColor("RED")
               .setFooter('In progress.');
-            return message.channel.send(lembed);
+            return message.channel.send(lembed);*/
             
         } 
             else if (command == "rbw") {
@@ -302,7 +302,7 @@ client.on("message", async message => {
         if (message.channel.parentID == category.id) {
             let member = message.guild.members.cache.get(message.channel.name)
 
-            if (!member) return message.channel.send('`Không thể gửi tin nhắn.`')
+            if (!member) return message.channel.send('`Can not send message.`')
 
             let lembed = new discord.MessageEmbed()
                 .setColor("GREEN")
@@ -327,26 +327,26 @@ client.on("message", async message => {
             let mx = await guild.channels.create(message.author.id, {
                 type: "text",
                 parent: category.id,
-                topic: "Form này được mở để giúp **" + message.author.tag + " **"
+                topic: "This CASE was opened to help **" + message.author.tag + "**"
             })
 
             let sembed = new discord.MessageEmbed()
-                .setAuthor("HỖ TRỢ ĐÃ MỞ")
+                .setAuthor("CASE OPENED")
                 .setColor("GREEN")
                 .setThumbnail(`https://cdn.discordapp.com/attachments/852888201391374376/853598262724395018/20210613_182942.gif`)
-                .setDescription("Hội thoại bắt đầu, từ bây giờ bạn sẽ được liên hệ với Staff của Owlvernyte. Hãy kiên nhẫn.")
+                .setDescription("Conversation begins, from now you will connect with Staff of " + message.guild.name + ". Be patient.")
 
             message.author.send(sembed)
 
 
             let eembed = new discord.MessageEmbed()
-                .setAuthor("CHI TIẾT", message.author.displayAvatarURL({ dynamic: true }))
+                .setAuthor("DETAILS", message.author.displayAvatarURL({ dynamic: true }))
                 .setColor("BLUE")
                 .setThumbnail(message.author.displayAvatarURL({ dynamic: true }))
                 .setDescription(message.content)
-                .addField("Tên", message.author.username)
-                .addField("Ngày tạo tài khoản", message.author.createdAt)
-                .addField("Liên hệ trực tiếp", "Không (Nghĩa là case này được mở khi nhắn tin với BOT)")
+                .addField("Name", message.author.username)
+                .addField("Account created date", message.author.createdAt)
+                .addField("Directly open", "No (Means this CASE is opened when a user DM the BOT)")
 
 
             return mx.send(eembed)
