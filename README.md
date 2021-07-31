@@ -48,3 +48,7 @@ ____
 
 ____
 Modded bot. Fork from fearless.modmail. 
+
+| [![owlvernyte](https://cdn.discordapp.com/attachments/852888201391374376/857857987099492382/ezgif-2-6b2302497da6.gif)](https://discord.link/owlvernyte) |
+| --- |
+| **Join our Discord server!** |
