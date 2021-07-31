@@ -1,3 +1,5 @@
+[![Discord](https://discord.com/api/guilds/830110554604961824/widget.png)](https://discord.link/owlvernyte)
+
 # modmail
 
 ## Main functions
