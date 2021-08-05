@@ -3,6 +3,9 @@
 # modmail
 
 ## Main functions
+Users can DM to BOT and chat with the server staff through the bot.
+
+### Commands
 
 `<>` is optional. `[]` is compusory.
 ```
